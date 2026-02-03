@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeria Ajustada Topo</title>
+    <title>Galeria Ajustada Final</title>
     <style>
         /* --- CONFIGURAÇÕES GERAIS --- */
         body {
@@ -32,9 +32,9 @@
             justify-content: space-between;
             align-items: flex-end; 
             
-            /* --- AJUSTE PARA SUBIR MAIS --- */
-            /* Aumentei para 110px para o texto ficar bem lá no alto */
-            padding: 0 20px 110px 20px; 
+            /* --- AJUSTE DE POSIÇÃO --- */
+            /* Baixei de 110px para 80px. Agora deve ficar na altura ideal. */
+            padding: 0 20px 80px 20px; 
             
             box-sizing: border-box;
             pointer-events: none; 
@@ -87,7 +87,9 @@
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding-top: 60px; /* Reduzi aqui para a foto não ficar com muito espaço branco no topo */
+            
+            /* Ajustei aqui também para as fotos não ficarem com um buraco muito grande em cima */
+            padding-top: 80px; 
         }
 
         /* GRADE DE FOTOS */
@@ -118,7 +120,7 @@
         .msg-vazio {
             text-align: center;
             color: #8e8e93;
-            margin-top: 120px; 
+            margin-top: 100px; 
             font-size: 16px;
         }
         
