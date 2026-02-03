@@ -2,43 +2,108 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Meu Teste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de Script</title>
     <style>
-        /* Aqui começa o estilo (CSS) */
+        /* --- ESTILOS (CSS) - O visual --- */
         body {
-            background-color: #0d1117; /* Fundo escuro estilo GitHub */
+            background-color: #0d1117; /* Fundo escuro padrão GitHub */
             color: #ffffff;
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center; /* Centraliza horizontalmente */
-            align-items: center; /* Centraliza verticalmente */
-            height: 100vh; /* Altura total da tela */
+            justify-content: center; /* Centraliza tudo na tela */
+            align-items: center;
+            height: 100vh; /* Altura total */
             margin: 0;
         }
 
         .caixa {
-            background-color: #161b22;
-            padding: 50px 100px;
+            background-color: #161b22; /* Cor da caixa */
+            padding: 60px 120px;
             border: 1px solid #30363d;
-            border-radius: 15px; /* Bordas arredondadas */
-            box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Brilho verde suave */
+            border-radius: 20px; /* Bordas mais arredondadas */
+            box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Brilho verde inicial */
             text-align: center;
+            cursor: pointer; /* Mostra a mãozinha ao passar o mouse */
+            transition: all 0.3s ease; /* Faz as animações serem suaves */
         }
 
-        h1 {
+        /* Efeito HOVER: Quando o mouse passa por cima da caixa */
+        .caixa:hover {
+            transform: scale(1.05); /* Aumenta um pouco o tamanho */
+            box-shadow: 0 0 40px rgba(0, 255, 127, 0.6); /* Brilho fica mais forte */
+            border-color: #00ff88;
+        }
+
+        /* O estilo do texto "Oi" */
+        #botao-acao {
             font-size: 4rem;
             margin: 0;
-            background: linear-gradient(90deg, #00ff88, #00bfff); /* Texto degradê */
+            background: linear-gradient(90deg, #00ff88, #00bfff); /* Degradê verde/azul */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* A mensagem "Copiado!" que fica escondida */
+        #mensagem-feedback {
+            color: #00ff88; /* Cor verde */
+            margin-top: 20px;
+            font-weight: bold;
+            opacity: 0; /* Começa invisível */
+            transition: opacity 0.3s; /* Aparece suavemente */
+        }
+
+        /* Classe que o JavaScript adiciona para mostrar a mensagem */
+        .mostrar-mensagem {
+            opacity: 1 !important; /* Torna visível */
         }
     </style>
 </head>
 <body>
 
-    <div class="caixa">
-        <h1>Oi</h1>
+    <div class="caixa" onclick="copiarScript()">
+        
+        <h1 id="botao-acao">Oi</h1>
+        
+        <p id="mensagem-feedback">Script copiado com sucesso!</p>
     </div>
+
+
+    <script>
+        // --- ÁREA DE EDIÇÃO ---
+        // Coloque aqui dentro das aspas o script que você quer que seja copiado!
+        const scriptParaCopiar = 'print("Olá! Este é o script do Luiz que foi copiado automaticamente.")';
+        // ----------------------
+
+
+        function copiarScript() {
+            // 1. Usa o navegador para copiar o texto que definimos acima
+            navigator.clipboard.writeText(scriptParaCopiar).then(() => {
+                
+                // 2. Se deu certo, avisa o usuário
+                // Pega o elemento da mensagem
+                const feedback = document.getElementById("mensagem-feedback");
+                // Pega o elemento do texto "Oi"
+                const textoOi = document.getElementById("botao-acao");
+                
+                // Mostra a mensagem de "Copiado"
+                feedback.classList.add("mostrar-mensagem");
+                // Muda o texto "Oi" para "Copiado!" temporariamente
+                textoOi.innerText = "Copiado!";
+
+                // 3. Espera 2 segundos e volta ao normal
+                setTimeout(() => {
+                    feedback.classList.remove("mostrar-mensagem"); // Esconde a mensagem
+                    textoOi.innerText = "Oi"; // Volta o texto para "Oi"
+                }, 2000);
+
+            }).catch(err => {
+                // Se der erro (raro em navegadores modernos)
+                console.error('Erro ao copiar: ', err);
+                alert("Ops, seu navegador bloqueou a cópia automática.");
+            });
+        }
+    </script>
 
 </body>
 </html>
