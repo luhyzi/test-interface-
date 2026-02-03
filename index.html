@@ -2,107 +2,311 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface de Script</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interface Celular Luiz</title>
     <style>
-        /* --- ESTILOS (CSS) - O visual --- */
+        /* --- CSS: O Visual --- */
+        :root {
+            --time-transition: 0.4s cubic-bezier(0.3, 1, 0.3, 1); /* Animação suave estilo iOS/Android */
+        }
+
         body {
-            background-color: #0d1117; /* Fundo escuro padrão GitHub */
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #222;
             display: flex;
-            justify-content: center; /* Centraliza tudo na tela */
+            justify-content: center;
             align-items: center;
-            height: 100vh; /* Altura total */
-            margin: 0;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .caixa {
-            background-color: #161b22; /* Cor da caixa */
-            padding: 60px 120px;
-            border: 1px solid #30363d;
-            border-radius: 20px; /* Bordas mais arredondadas */
-            box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Brilho verde inicial */
-            text-align: center;
-            cursor: pointer; /* Mostra a mãozinha ao passar o mouse */
-            transition: all 0.3s ease; /* Faz as animações serem suaves */
+        /* O "Celular" */
+        .phone-frame {
+            width: 100%;
+            height: 100%;
+            max-width: 412px; /* Tamanho aproximado de um celular moderno */
+            max-height: 915px;
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop') center/cover no-repeat; /* Fundo de praia similar */
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px; /* Bordas do celular */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* Efeito HOVER: Quando o mouse passa por cima da caixa */
-        .caixa:hover {
-            transform: scale(1.05); /* Aumenta um pouco o tamanho */
-            box-shadow: 0 0 40px rgba(0, 255, 127, 0.6); /* Brilho fica mais forte */
-            border-color: #00ff88;
-        }
-
-        /* O estilo do texto "Oi" */
-        #botao-acao {
-            font-size: 4rem;
-            margin: 0;
-            background: linear-gradient(90deg, #00ff88, #00bfff); /* Degradê verde/azul */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* A mensagem "Copiado!" que fica escondida */
-        #mensagem-feedback {
-            color: #00ff88; /* Cor verde */
-            margin-top: 20px;
+        /* Barra de Status Superior */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 14px;
             font-weight: bold;
-            opacity: 0; /* Começa invisível */
-            transition: opacity 0.3s; /* Aparece suavemente */
+            z-index: 10;
         }
 
-        /* Classe que o JavaScript adiciona para mostrar a mensagem */
-        .mostrar-mensagem {
-            opacity: 1 !important; /* Torna visível */
+        /* Tela Inicial - Container */
+        .home-screen {
+            padding: 60px 20px 20px 20px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--time-transition), opacity var(--time-transition);
         }
+
+        /* Quando um app abre, a tela inicial recua um pouco */
+        .home-screen.recuar {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        /* Widgets Superiores */
+        .widgets-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .widget {
+            background: rgba(50, 50, 50, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 20px;
+            color: white;
+            flex: 1;
+        }
+
+        /* Grade de Ícones */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+            gap: 25px 15px;
+        }
+
+        /* O Ícone individual */
+        .app-icon {
+            width: 65px;
+            height: 65px;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            margin: 0 auto;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .app-icon:active {
+            transform: scale(0.9); /* Efeito de clique rápido */
+        }
+
+        /* --- AS TELAS DOS APLICATIVOS --- */
+        .app-full-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            
+            /* MÁGICA DA ANIMAÇÃO */
+            opacity: 0;
+            transform: scale(0); /* Começa invisível e pequeno */
+            transform-origin: center center; /* O JS vai mudar isso dinamicamente */
+            transition: transform var(--time-transition), opacity var(--time-transition), border-radius var(--time-transition);
+            border-radius: 18px; /* Começa arredondado igual o ícone */
+            pointer-events: none; /* Não atrapalha cliques quando fechado */
+        }
+
+        /* Classe para abrir o app */
+        .app-full-screen.active {
+            opacity: 1;
+            transform: scale(1); /* Ocupa 100% */
+            border-radius: 0; /* Fica quadrado ao abrir */
+            pointer-events: auto;
+        }
+
+        .app-header {
+            padding: 40px 20px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+        .app-content {
+            flex: 1;
+            padding: 20px;
+            font-size: 18px;
+            background: white;
+        }
+
+        /* --- PAINEL DE NOTIFICAÇÕES --- */
+        .notification-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            z-index: 30;
+            transform: translateY(-100%); /* Começa escondido lá em cima */
+            transition: transform var(--time-transition);
+            color: white;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+        .notification-panel.open {
+            transform: translateY(0); /* Desliza para baixo */
+        }
+
+        /* Botão Home Virtual (para fechar apps) */
+        .home-indicator-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .home-indicator {
+            width: 120px;
+            height: 5px;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="caixa" onclick="copiarScript()">
+    <div class="phone-frame">
+        <div class="status-bar" onclick="toggleNotificationPanel()">
+            <div>18:55</div>
+            <div>LTE 85%</div>
+        </div>
+
+        <div class="home-screen" id="homeScreen">
+            <div class="widgets-area">
+                <div class="widget">Ter. 3 FEV</div>
+                <div class="widget">29° Mar...</div>
+            </div>
+
+            <div class="app-grid">
+                <div class="app-icon" style="background:#ff4757" data-app="app-playstore">🛒</div>
+                <div class="app-icon" style="background:#2ed573" data-app="app-whatsapp">📞</div>
+                <div class="app-icon" style="background:#1e90ff" data-app="app-files">📂</div>
+                <div class="app-icon" style="background:#ffa502" data-app="app-notes">📝</div>
+                <div class="app-icon" style="background:#3742fa" data-app="app-config">⚙️</div>
+            </div>
+        </div>
+
+        <div class="app-full-screen" id="app-playstore" style="background: #f8f9fa;">
+            <div class="app-header">Play Store</div>
+            <div class="app-content">Conteúdo da loja...</div>
+        </div>
+
+        <div class="app-full-screen" id="app-whatsapp" style="background: #efeae2;">
+             <div class="app-header" style="background:#075e54; color:white">WhatsApp</div>
+            <div class="app-content">Lista de conversas...</div>
+        </div>
         
-        <h1 id="botao-acao">Oi</h1>
+        <div class="app-full-screen" id="app-files">
+             <div class="app-header">Meus Arquivos</div>
+            <div class="app-content">Armazenamento interno...</div>
+        </div>
         
-        <p id="mensagem-feedback">Script copiado com sucesso!</p>
+         <div class="app-full-screen" id="app-notes">
+             <div class="app-header">Notas</div>
+            <div class="app-content">Suas anotações...</div>
+        </div>
+        
+         <div class="app-full-screen" id="app-config">
+             <div class="app-header">Configurações</div>
+            <div class="app-content">Wi-Fi, Bluetooth...</div>
+        </div>
+
+
+        <div class="notification-panel" id="notificationPanel" onclick="toggleNotificationPanel()">
+            <h2>Configurações Rápidas</h2>
+            <div style="display: flex; gap: 20px; margin-top: 30px;">
+                <div style="background: #1e90ff; width: 50px; height: 50px; border-radius: 50%; display:center; align-items:center; display:flex; justify-content:center">Wi-Fi</div>
+                <div style="background: #2ed573; width: 50px; height: 50px; border-radius: 50%; display:center; align-items:center; display:flex; justify-content:center">BT</div>
+            </div>
+            <p style="margin-top: 50px;">Nenhuma notificação nova.</p>
+            <p style="font-size: 12px; margin-top: 100px; text-align: center;">Toque para fechar</p>
+        </div>
+
+        <div class="home-indicator-area" onclick="fecharAppAberto()">
+            <div class="home-indicator"></div>
+        </div>
+
     </div>
 
 
     <script>
-        // --- ÁREA DE EDIÇÃO ---
-        // Coloque aqui dentro das aspas o script que você quer que seja copiado!
-        const scriptParaCopiar = 'print("Olá! Este é o script do Luiz que foi copiado automaticamente.")';
-        // ----------------------
+        // --- JAVASCRIPT: A Lógica das Animações ---
 
+        let appAbertoAtualmente = null;
+        const homeScreen = document.getElementById('homeScreen');
+        const notificationPanel = document.getElementById('notificationPanel');
 
-        function copiarScript() {
-            // 1. Usa o navegador para copiar o texto que definimos acima
-            navigator.clipboard.writeText(scriptParaCopiar).then(() => {
+        // 1. Função para Abrir o App (Animação de Zoom)
+        const icones = document.querySelectorAll('.app-icon');
+        
+        icones.forEach(icone => {
+            icone.addEventListener('click', (e) => {
+                const idDoApp = icone.getAttribute('data-app');
+                const appParaAbrir = document.getElementById(idDoApp);
+
+                // MÁGICA: Calcula onde o ícone está na tela
+                const rect = icone.getBoundingClientRect();
+                const centroX = rect.left + rect.width / 2;
+                const centroY = rect.top + rect.height / 2;
+
+                // Define o ponto de origem da animação exatamente no centro do ícone clicado
+                appParaAbrir.style.transformOrigin = `${centroX}px ${centroY}px`;
+
+                // Ativa a animação
+                homeScreen.classList.add('recuar'); // Afasta a tela inicial
+                appParaAbrir.classList.add('active'); // Expande o app
                 
-                // 2. Se deu certo, avisa o usuário
-                // Pega o elemento da mensagem
-                const feedback = document.getElementById("mensagem-feedback");
-                // Pega o elemento do texto "Oi"
-                const textoOi = document.getElementById("botao-acao");
-                
-                // Mostra a mensagem de "Copiado"
-                feedback.classList.add("mostrar-mensagem");
-                // Muda o texto "Oi" para "Copiado!" temporariamente
-                textoOi.innerText = "Copiado!";
-
-                // 3. Espera 2 segundos e volta ao normal
-                setTimeout(() => {
-                    feedback.classList.remove("mostrar-mensagem"); // Esconde a mensagem
-                    textoOi.innerText = "Oi"; // Volta o texto para "Oi"
-                }, 2000);
-
-            }).catch(err => {
-                // Se der erro (raro em navegadores modernos)
-                console.error('Erro ao copiar: ', err);
-                alert("Ops, seu navegador bloqueou a cópia automática.");
+                appAbertoAtualmente = appParaAbrir;
             });
+        });
+
+
+        // 2. Função para Fechar o App (Clicando na barrinha branca embaixo)
+        function fecharAppAberto() {
+            if (appAbertoAtualmente) {
+                homeScreen.classList.remove('recuar'); // Traz a tela inicial de volta
+                appAbertoAtualmente.classList.remove('active'); // Encolhe o app de volta para a origem
+                appAbertoAtualmente = null;
+            }
         }
+
+        // 3. Função do Painel de Notificações (Clicando no relógio lá em cima)
+        function toggleNotificationPanel() {
+            // Só abre se não tiver app aberto
+            if(!appAbertoAtualmente) {
+                 notificationPanel.classList.toggle('open');
+            }
+        }
+
     </script>
 
 </body>
