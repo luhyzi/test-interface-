@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interface Celular Luiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Quadrada Luiz</title>
     <style>
         /* --- CSS: O Visual --- */
         :root {
@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Roboto', Arial, sans-serif;
-            background-color: #222;
+            background-color: #222; /* Fundo escuro da página */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,17 +22,16 @@
             overflow: hidden;
         }
 
-        /* O "Celular" */
+        /* O "Celular" - AGORA É UM QUADRADO PEQUENO */
         .phone-frame {
-            width: 100%;
-            height: 100%;
-            max-width: 412px; /* Tamanho aproximado de um celular moderno */
-            max-height: 915px;
-            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop') center/cover no-repeat; /* Fundo de praia similar */
+            width: 400px;  /* Largura fixa */
+            height: 400px; /* Altura fixa igual à largura para ser quadrado */
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop') center/cover no-repeat;
             position: relative;
-            overflow: hidden;
-            border-radius: 30px; /* Bordas do celular */
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden; /* Corta o que não couber no quadrado */
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* Sombra para destacar */
+            border: 5px solid #333; /* Uma borda para parecer uma moldura */
         }
 
         /* Barra de Status Superior */
@@ -41,7 +40,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            padding: 10px 20px;
+            padding: 15px 20px;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
@@ -61,7 +60,6 @@
             transition: transform var(--time-transition), opacity var(--time-transition);
         }
 
-        /* Quando um app abre, a tela inicial recua um pouco */
         .home-screen.recuar {
             transform: scale(0.95);
             opacity: 0;
@@ -70,42 +68,43 @@
         /* Widgets Superiores */
         .widgets-area {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
         .widget {
             background: rgba(50, 50, 50, 0.6);
             backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 20px;
+            padding: 10px;
+            border-radius: 15px;
             color: white;
             flex: 1;
+            font-size: 12px;
         }
 
         /* Grade de Ícones */
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 colunas */
-            gap: 25px 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px 10px;
         }
 
         /* O Ícone individual */
         .app-icon {
-            width: 65px;
-            height: 65px;
+            width: 55px; /* Um pouco menor para caber no quadrado */
+            height: 55px;
             background-color: rgba(255,255,255,0.9);
-            border-radius: 18px;
+            border-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 30px;
+            font-size: 24px;
             margin: 0 auto;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: transform 0.1s;
         }
         .app-icon:active {
-            transform: scale(0.9); /* Efeito de clique rápido */
+            transform: scale(0.9);
         }
 
         /* --- AS TELAS DOS APLICATIVOS --- */
@@ -119,35 +118,33 @@
             z-index: 20;
             display: flex;
             flex-direction: column;
-            
-            /* MÁGICA DA ANIMAÇÃO */
             opacity: 0;
-            transform: scale(0); /* Começa invisível e pequeno */
-            transform-origin: center center; /* O JS vai mudar isso dinamicamente */
+            transform: scale(0);
+            transform-origin: center center;
             transition: transform var(--time-transition), opacity var(--time-transition), border-radius var(--time-transition);
-            border-radius: 18px; /* Começa arredondado igual o ícone */
-            pointer-events: none; /* Não atrapalha cliques quando fechado */
+            border-radius: 15px;
+            pointer-events: none;
         }
 
-        /* Classe para abrir o app */
         .app-full-screen.active {
             opacity: 1;
-            transform: scale(1); /* Ocupa 100% */
-            border-radius: 0; /* Fica quadrado ao abrir */
+            transform: scale(1);
+            border-radius: 0;
             pointer-events: auto;
         }
 
         .app-header {
             padding: 40px 20px 20px;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             background: #f0f0f0;
         }
         .app-content {
             flex: 1;
             padding: 20px;
-            font-size: 18px;
+            font-size: 16px;
             background: white;
+            overflow-y: auto; /* Barra de rolagem se o conteúdo for grande */
         }
 
         /* --- PAINEL DE NOTIFICAÇÕES --- */
@@ -160,31 +157,32 @@
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(15px);
             z-index: 30;
-            transform: translateY(-100%); /* Começa escondido lá em cima */
+            transform: translateY(-100%);
             transition: transform var(--time-transition);
             color: white;
             padding: 60px 20px;
             box-sizing: border-box;
         }
         .notification-panel.open {
-            transform: translateY(0); /* Desliza para baixo */
+            transform: translateY(0);
         }
 
-        /* Botão Home Virtual (para fechar apps) */
+        /* Botão Home Virtual */
         .home-indicator-area {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 40px;
+            height: 30px;
             z-index: 50;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
+            padding-bottom: 10px;
         }
         .home-indicator {
-            width: 120px;
-            height: 5px;
+            width: 100px;
+            height: 4px;
             background-color: rgba(255,255,255,0.5);
             border-radius: 10px;
             cursor: pointer;
@@ -196,14 +194,14 @@
 
     <div class="phone-frame">
         <div class="status-bar" onclick="toggleNotificationPanel()">
-            <div>18:55</div>
-            <div>LTE 85%</div>
+            <div>19:00</div>
+            <div>LTE</div>
         </div>
 
         <div class="home-screen" id="homeScreen">
             <div class="widgets-area">
                 <div class="widget">Ter. 3 FEV</div>
-                <div class="widget">29° Mar...</div>
+                <div class="widget">29° Sol</div>
             </div>
 
             <div class="app-grid">
@@ -211,44 +209,43 @@
                 <div class="app-icon" style="background:#2ed573" data-app="app-whatsapp">📞</div>
                 <div class="app-icon" style="background:#1e90ff" data-app="app-files">📂</div>
                 <div class="app-icon" style="background:#ffa502" data-app="app-notes">📝</div>
-                <div class="app-icon" style="background:#3742fa" data-app="app-config">⚙️</div>
+                 <div class="app-icon" style="background:#3742fa" data-app="app-config">⚙️</div>
             </div>
         </div>
 
         <div class="app-full-screen" id="app-playstore" style="background: #f8f9fa;">
             <div class="app-header">Play Store</div>
-            <div class="app-content">Conteúdo da loja...</div>
+            <div class="app-content">Loja de Apps...</div>
         </div>
 
         <div class="app-full-screen" id="app-whatsapp" style="background: #efeae2;">
              <div class="app-header" style="background:#075e54; color:white">WhatsApp</div>
-            <div class="app-content">Lista de conversas...</div>
+            <div class="app-content">Conversas...</div>
         </div>
         
         <div class="app-full-screen" id="app-files">
-             <div class="app-header">Meus Arquivos</div>
-            <div class="app-content">Armazenamento interno...</div>
+             <div class="app-header">Arquivos</div>
+            <div class="app-content">Memória interna...</div>
         </div>
         
-         <div class="app-full-screen" id="app-notes">
+        <div class="app-full-screen" id="app-notes">
              <div class="app-header">Notas</div>
-            <div class="app-content">Suas anotações...</div>
+            <div class="app-content">Anotações rápidas...</div>
         </div>
         
-         <div class="app-full-screen" id="app-config">
-             <div class="app-header">Configurações</div>
-            <div class="app-content">Wi-Fi, Bluetooth...</div>
+        <div class="app-full-screen" id="app-config">
+             <div class="app-header">Ajustes</div>
+            <div class="app-content">Wi-Fi, Sons...</div>
         </div>
 
 
         <div class="notification-panel" id="notificationPanel" onclick="toggleNotificationPanel()">
-            <h2>Configurações Rápidas</h2>
-            <div style="display: flex; gap: 20px; margin-top: 30px;">
-                <div style="background: #1e90ff; width: 50px; height: 50px; border-radius: 50%; display:center; align-items:center; display:flex; justify-content:center">Wi-Fi</div>
-                <div style="background: #2ed573; width: 50px; height: 50px; border-radius: 50%; display:center; align-items:center; display:flex; justify-content:center">BT</div>
+            <h3>Controles</h3>
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <div style="background: #1e90ff; width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:12px">Wi-Fi</div>
+                <div style="background: #2ed573; width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:12px">BT</div>
             </div>
-            <p style="margin-top: 50px;">Nenhuma notificação nova.</p>
-            <p style="font-size: 12px; margin-top: 100px; text-align: center;">Toque para fechar</p>
+            <p style="margin-top: 30px; font-size: 14px;">Sem notificações.</p>
         </div>
 
         <div class="home-indicator-area" onclick="fecharAppAberto()">
@@ -259,13 +256,12 @@
 
 
     <script>
-        // --- JAVASCRIPT: A Lógica das Animações ---
+        // --- JAVASCRIPT (Mesma lógica de antes) ---
 
         let appAbertoAtualmente = null;
         const homeScreen = document.getElementById('homeScreen');
         const notificationPanel = document.getElementById('notificationPanel');
 
-        // 1. Função para Abrir o App (Animação de Zoom)
         const icones = document.querySelectorAll('.app-icon');
         
         icones.forEach(icone => {
@@ -273,40 +269,34 @@
                 const idDoApp = icone.getAttribute('data-app');
                 const appParaAbrir = document.getElementById(idDoApp);
 
-                // MÁGICA: Calcula onde o ícone está na tela
                 const rect = icone.getBoundingClientRect();
-                const centroX = rect.left + rect.width / 2;
-                const centroY = rect.top + rect.height / 2;
+                // Ajuste fino para o cálculo do centro dentro do quadrado
+                const frameRect = document.querySelector('.phone-frame').getBoundingClientRect();
+                
+                const centroX = (rect.left - frameRect.left) + rect.width / 2;
+                const centroY = (rect.top - frameRect.top) + rect.height / 2;
 
-                // Define o ponto de origem da animação exatamente no centro do ícone clicado
                 appParaAbrir.style.transformOrigin = `${centroX}px ${centroY}px`;
 
-                // Ativa a animação
-                homeScreen.classList.add('recuar'); // Afasta a tela inicial
-                appParaAbrir.classList.add('active'); // Expande o app
-                
+                homeScreen.classList.add('recuar');
+                appParaAbrir.classList.add('active');
                 appAbertoAtualmente = appParaAbrir;
             });
         });
 
-
-        // 2. Função para Fechar o App (Clicando na barrinha branca embaixo)
         function fecharAppAberto() {
             if (appAbertoAtualmente) {
-                homeScreen.classList.remove('recuar'); // Traz a tela inicial de volta
-                appAbertoAtualmente.classList.remove('active'); // Encolhe o app de volta para a origem
+                homeScreen.classList.remove('recuar');
+                appAbertoAtualmente.classList.remove('active');
                 appAbertoAtualmente = null;
             }
         }
 
-        // 3. Função do Painel de Notificações (Clicando no relógio lá em cima)
         function toggleNotificationPanel() {
-            // Só abre se não tiver app aberto
             if(!appAbertoAtualmente) {
                  notificationPanel.classList.toggle('open');
             }
         }
-
     </script>
 
 </body>
