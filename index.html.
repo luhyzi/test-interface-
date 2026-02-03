@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Teste</title>
+    <style>
+        /* Aqui começa o estilo (CSS) */
+        body {
+            background-color: #0d1117; /* Fundo escuro estilo GitHub */
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            height: 100vh; /* Altura total da tela */
+            margin: 0;
+        }
+
+        .caixa {
+            background-color: #161b22;
+            padding: 50px 100px;
+            border: 1px solid #30363d;
+            border-radius: 15px; /* Bordas arredondadas */
+            box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Brilho verde suave */
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(90deg, #00ff88, #00bfff); /* Texto degradê */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="caixa">
+        <h1>Oi</h1>
+    </div>
+
+</body>
+</html>
