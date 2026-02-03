@@ -3,133 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeria Clean Apple Style</title>
+    <title>Galeria iOS Style</title>
     <style>
+        /* --- CONFIGURAÇÕES GERAIS --- */
         body {
             margin: 0;
             background-color: #000; /* Fundo preto total */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             color: white;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Impede a página inteira de rolar, só a galeria rola */
         }
 
-        /* --- O NOVO CABEÇALHO ESTILO APPLE --- */
-        .cabecalho {
-            /* Aumentei o padding superior para ficar mais elegante */
-            padding: 60px 25px 20px 25px;
-            
-            /* O DEGRADÊ ESCURO (O que você marcou na foto)
-               Vai do preto quase sólido (0.8) no topo até transparente (0) embaixo */
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
-            
-            /* O DESFOQUE FORTE "ESTILO APPLE" NO CABEÇALHO INTEIRO */
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end; /* Alinha os itens na parte de baixo do cabeçalho */
-            position: sticky;
+        /* --- O CABEÇALHO (A MÁGICA ESTÁ AQUI) --- */
+        .cabecalho-ios {
+            position: absolute; /* Fica fixo no topo, flutuando sobre as fotos */
             top: 0;
-            z-index: 10;
-        }
-
-        /* Título limpo, sem bolha */
-        .titulo-texto {
-            font-size: 34px; /* Fonte maior e mais impactante */
-            font-weight: 800; /* Negrito forte estilo iOS */
-            letter-spacing: -0.5px;
-            /* Removemos qualquer background ou borda aqui */
-        }
-
-        /* O Botão Redondo (Mantive pois combina com o estilo) */
-        .btn-add-redondo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 122, 255, 0.2); /* Azul bem sutil */
+            left: 0;
+            width: 100%;
+            height: 140px; /* Altura para caber o degradê */
+            z-index: 10; /* Garante que fica por cima das fotos */
+            
+            /* O DEGRADÊ ESCURO QUE VOCÊ PEDIU */
+            /* Vai do preto (0.9) no topo até transparente (0) embaixo */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%);
+            
+            /* O DESFOQUE "APPLE" (GLASSMORPHISM) */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #007AFF; /* Ícone azul */
-            font-size: 24px;
+            
+            /* Organização dos itens dentro do cabeçalho */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end; /* Alinha tudo na parte de baixo do cabeçalho */
+            padding: 0 20px 20px 20px; /* Espaçamento interno */
+            box-sizing: border-box; /* Garante que o padding não aumente a largura */
+            pointer-events: none; /* Deixa você clicar nas fotos se elas estiverem muito no topo (opcional) */
+        }
+
+        /* Para os botões funcionarem, precisamos reativar os cliques neles */
+        .cabecalho-ios > * {
+            pointer-events: auto;
+        }
+
+        /* TÍTULO GRANDE ESTILO IOS */
+        .titulo-ios {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Sombra leve para leitura */
+            margin-bottom: 5px;
+        }
+
+        /* ÁREA DOS BOTÕES (DIREITA) */
+        .controles {
             display: flex;
             align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* BOTÃO DE ADICIONAR (+) */
+        .btn-add-ios {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.15); /* Cinza bem transparente */
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #0A84FF; /* Azul Apple */
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .btn-add-redondo:active {
-            transform: scale(0.9);
+            backdrop-filter: blur(20px);
         }
 
-        /* Botão Limpar discreto */
+        /* Botão de Limpar (Texto simples) */
         .btn-limpar {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.6); /* Branco acinzentado */
+            font-size: 14px;
+            color: #0A84FF;
+            font-weight: 600;
             cursor: pointer;
-            margin-right: 20px;
-            font-weight: 500;
         }
 
-        /* Área das fotos */
+        /* --- A ÁREA DE ROLAGEM DAS FOTOS --- */
         .scroll-area {
             flex: 1;
             overflow-y: auto;
-            /* Movemos as fotos um pouco para cima para passarem por baixo do cabeçalho transparente */
-            margin-top: -20px; 
-            padding-top: 20px;
+            padding-top: 100px; /* Empurra as primeiras fotos para baixo do cabeçalho */
+            padding-bottom: 40px;
         }
 
+        /* GRADE DE FOTOS */
         .grid-fotos {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
+            grid-template-columns: repeat(3, 1fr); /* 3 Colunas igual iPhone */
+            gap: 2px; /* Espacinho mínimo entre fotos */
         }
 
         .foto-container {
             position: relative;
             width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: #111;
+            aspect-ratio: 1 / 1; /* Quadrado perfeito */
+            background-color: #1c1c1e; /* Cinza escuro de fundo enquanto carrega */
+            overflow: hidden;
         }
 
         .foto {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s;
+            display: block;
         }
         
-        /* Input escondido */
-        #input-real { display: none; }
+        /* Efeito ao clicar na foto */
+        .foto:active {
+            opacity: 0.8;
+        }
 
-        /* Mensagem se não tiver fotos */
+        /* MENSAGEM DE VAZIO */
         .msg-vazio {
             text-align: center;
-            color: #555;
-            margin-top: 150px;
+            color: #8e8e93;
+            margin-top: 50px;
             font-size: 16px;
         }
+        
+        /* Input invisível */
+        #input-real { display: none; }
 
     </style>
 </head>
 <body>
 
-    <div class="cabecalho">
-        <span class="titulo-texto">Galeria</span>
-
-        <div style="display: flex; align-items: center; padding-bottom: 5px;">
-            <span class="btn-limpar" onclick="limparTudo()">Limpar</span>
-            <div class="btn-add-redondo" onclick="abrirSeletor()">+</div>
+    <div class="cabecalho-ios">
+        <div class="titulo-ios">Galeria</div>
+        
+        <div class="controles">
+            <span class="btn-limpar" onclick="limparTudo()">Select</span>
+            <div class="btn-add-ios" onclick="abrirSeletor()">+</div>
         </div>
     </div>
 
     <div class="scroll-area">
         <div id="mensagem-vazio" class="msg-vazio">
-            Nenhuma foto.<br>Toque no + para adicionar.
+            Nenhuma Foto ou Vídeo
         </div>
         <div class="grid-fotos" id="grid">
             </div>
@@ -138,34 +159,50 @@
     <input type="file" id="input-real" accept="image/*" onchange="salvarFoto(this)">
 
     <script>
-        // (O JAVASCRIPT É EXATAMENTE O MESMO, NÃO MUDOU NADA NA LÓGICA)
+        /* --- JAVASCRIPT (LÓGICA) --- */
         const grid = document.getElementById('grid');
         const msgVazio = document.getElementById('mensagem-vazio');
 
-        window.onload = function() { carregarFotosSalvas(); };
-        function abrirSeletor() { document.getElementById('input-real').click(); }
+        // Carrega fotos ao abrir
+        window.onload = function() {
+            carregarFotosSalvas();
+        };
 
+        function abrirSeletor() {
+            document.getElementById('input-real').click();
+        }
+
+        // Salva a foto na memória do navegador
         function salvarFoto(input) {
             if (input.files && input.files[0]) {
                 const arquivo = input.files[0];
                 const leitor = new FileReader();
+
                 leitor.onload = function(e) {
                     const fotoBase64 = e.target.result;
                     try {
                         let fotosAntigas = JSON.parse(localStorage.getItem('minhasFotosLuiz')) || [];
-                        fotosAntigas.push(fotoBase64);
+                        // Adiciona no começo (unshift) para a foto nova aparecer no topo
+                        fotosAntigas.unshift(fotoBase64); 
                         localStorage.setItem('minhasFotosLuiz', JSON.stringify(fotosAntigas));
-                        adicionarNaTela(fotoBase64);
+                        
+                        // Recarrega a grade
+                        carregarFotosSalvas();
+                        
                     } catch (erro) {
-                        alert("Memória cheia! Limpe algumas fotos.");
+                        alert("Memória cheia! Clique em 'Select' para limpar.");
                     }
                 }
                 leitor.readAsDataURL(arquivo);
             }
         }
 
+        // Mostra as fotos na tela
         function carregarFotosSalvas() {
             const fotosSalvas = JSON.parse(localStorage.getItem('minhasFotosLuiz')) || [];
+            
+            grid.innerHTML = ''; // Limpa antes de reconstruir
+
             if (fotosSalvas.length === 0) {
                 msgVazio.style.display = 'block';
             } else {
@@ -177,18 +214,20 @@
         }
 
         function adicionarNaTela(imagemSrc) {
-            msgVazio.style.display = 'none';
             const div = document.createElement('div');
             div.className = 'foto-container';
+            
             const img = document.createElement('img');
             img.src = imagemSrc;
             img.className = 'foto';
+            
             div.appendChild(img);
             grid.appendChild(div);
         }
 
+        // Limpar tudo
         function limparTudo() {
-            if(confirm("Apagar todas as fotos?")) {
+            if(confirm("Deseja apagar todas as fotos da galeria?")) {
                 localStorage.removeItem('minhasFotosLuiz');
                 location.reload();
             }
