@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Galeria Real</title>
+    <title>Galeria Glass</title>
     <style>
         body {
             margin: 0;
-            background-color: #000;
+            background-color: #000; /* Fundo preto total */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: white;
             height: 100vh;
@@ -15,11 +15,11 @@
             flex-direction: column;
         }
 
-        /* Cabeçalho */
+        /* Cabeçalho Transparente */
         .cabecalho {
             padding: 40px 20px 15px 20px;
-            background: rgba(20, 20, 20, 0.95);
-            border-bottom: 1px solid #333;
+            /* Removemos o fundo sólido para destacar as bolhas */
+            background: transparent; 
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -28,24 +28,58 @@
             z-index: 10;
         }
 
-        .titulo { font-size: 24px; font-weight: bold; }
-        
-        /* Botão de Adicionar (+) */
-        .btn-add {
-            font-size: 28px;
-            color: #007AFF;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0 10px;
+        /* --- MUDANÇA 1: A BOLHA DO TÍTULO --- */
+        .titulo-bolha {
+            background: rgba(255, 255, 255, 0.15); /* Branco bem fraquinho */
+            backdrop-filter: blur(10px); /* O Desfoque Mágico */
+            -webkit-backdrop-filter: blur(10px); /* Para funcionar no iPhone */
+            padding: 8px 20px;
+            border-radius: 30px; /* Borda bem redonda */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina sutil */
+            font-size: 18px; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Botão de Limpar (Lixeira) */
-        .btn-limpar {
-            font-size: 14px;
-            color: #ff3b30;
+        /* --- MUDANÇA 2: O BOTÃO REDONDO DESFOCADO --- */
+        .btn-add-redondo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Faz virar uma bola perfeita */
+            
+            /* Efeito de Vidro Azulado */
+            background: rgba(0, 122, 255, 0.3); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            
+            color: white;
+            font-size: 28px;
+            display: flex;          /* Centraliza o + */
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); /* Brilho azul */
+            transition: transform 0.2s;
+        }
+        
+        .btn-add-redondo:active {
+            transform: scale(0.9); /* Diminui ao clicar */
+        }
+
+        /* Botão de Limpar (Texto pequeno) */
+        .btn-limpar {
+            font-size: 12px;
+            color: #ff3b30; /* Vermelho */
+            background: rgba(255, 59, 48, 0.1);
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 59, 48, 0.2);
         }
 
         /* Área das fotos */
@@ -57,7 +91,7 @@
 
         .grid-fotos {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+            grid-template-columns: repeat(3, 1fr);
             gap: 2px;
         }
 
@@ -76,8 +110,6 @@
             transition: transform 0.3s;
         }
         
-        .foto:active { transform: scale(1.1); }
-
         /* Input escondido */
         #input-real { display: none; }
 
@@ -85,8 +117,8 @@
         .msg-vazio {
             text-align: center;
             color: #555;
-            margin-top: 50px;
-            display: none;
+            margin-top: 100px;
+            font-size: 14px;
         }
 
     </style>
@@ -94,18 +126,20 @@
 <body>
 
     <div class="cabecalho">
-        <div style="display:flex; align-items:center">
-            <span class="titulo">Galeria</span>
+        <div class="titulo-bolha">
+            <span>Galeria</span>
         </div>
-        <div>
-            <span class="btn-limpar" onclick="limparTudo()">Limpar Tudo</span>
-            <button class="btn-add" onclick="abrirSeletor()">+</button>
+
+        <div style="display: flex; align-items: center;">
+            <span class="btn-limpar" onclick="limparTudo()">Limpar</span>
+            
+            <div class="btn-add-redondo" onclick="abrirSeletor()">+</div>
         </div>
     </div>
 
     <div class="scroll-area">
         <div id="mensagem-vazio" class="msg-vazio">
-            Nenhuma foto salva.<br>Clique no + para adicionar.
+            Sua galeria está vazia.<br>Toque no botão azul para adicionar.
         </div>
         <div class="grid-fotos" id="grid">
             </div>
@@ -117,48 +151,37 @@
         const grid = document.getElementById('grid');
         const msgVazio = document.getElementById('mensagem-vazio');
 
-        // 1. AO ABRIR O SITE: Carrega as fotos salvas
+        // AO ABRIR O SITE: Carrega as fotos salvas
         window.onload = function() {
             carregarFotosSalvas();
         };
 
-        // Função para abrir a galeria do celular
         function abrirSeletor() {
             document.getElementById('input-real').click();
         }
 
-        // 2. O SEGREDO: Função que converte a foto e salva na memória
+        // Função que converte e salva
         function salvarFoto(input) {
             if (input.files && input.files[0]) {
                 const arquivo = input.files[0];
-                
-                // Leitor de arquivo
                 const leitor = new FileReader();
 
                 leitor.onload = function(e) {
-                    const fotoBase64 = e.target.result; // A foto convertida em texto
+                    const fotoBase64 = e.target.result;
                     
                     try {
-                        // Tenta salvar na memória do navegador
                         let fotosAntigas = JSON.parse(localStorage.getItem('minhasFotosLuiz')) || [];
                         fotosAntigas.push(fotoBase64);
-                        
                         localStorage.setItem('minhasFotosLuiz', JSON.stringify(fotosAntigas));
-                        
-                        // Mostra na tela imediatamente
                         adicionarNaTela(fotoBase64);
-                        
                     } catch (erro) {
-                        alert("Memória cheia! Apague algumas fotos (Limpar Tudo) para colocar novas.");
+                        alert("Memória do navegador cheia! Limpe algumas fotos.");
                     }
                 }
-
-                // Começa a ler o arquivo
                 leitor.readAsDataURL(arquivo);
             }
         }
 
-        // Função que lê a memória e coloca as fotos na tela
         function carregarFotosSalvas() {
             const fotosSalvas = JSON.parse(localStorage.getItem('minhasFotosLuiz')) || [];
             
@@ -172,26 +195,21 @@
             }
         }
 
-        // Cria o elemento HTML da imagem
         function adicionarNaTela(imagemSrc) {
             msgVazio.style.display = 'none';
-            
             const div = document.createElement('div');
             div.className = 'foto-container';
-            
             const img = document.createElement('img');
             img.src = imagemSrc;
             img.className = 'foto';
-            
             div.appendChild(img);
             grid.appendChild(div);
         }
 
-        // Função para apagar tudo (caso lote a memória)
         function limparTudo() {
-            if(confirm("Tem certeza? Isso vai apagar todas as fotos salvas.")) {
+            if(confirm("Apagar todas as fotos?")) {
                 localStorage.removeItem('minhasFotosLuiz');
-                location.reload(); // Recarrega a página
+                location.reload();
             }
         }
     </script>
