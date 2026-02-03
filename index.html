@@ -32,7 +32,7 @@
             justify-content: space-between;
             align-items: flex-end; 
             
-            /* Mantive o ajuste de altura que você gostou (80px) */
+            /* Mantive o posicionamento do texto que você gostou */
             padding: 0 20px 80px 20px; 
             
             box-sizing: border-box;
@@ -86,21 +86,25 @@
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding-top: 80px; 
+            
+            /* --- MUDANÇA 1: ESPAÇAMENTO DO TOPO --- */
+            /* Aumentei de 80px para 130px. 
+               Agora as fotos começam bem abaixo do nome "Galeria" */
+            padding-top: 130px; 
         }
 
-        /* --- A CORREÇÃO ESTÁ AQUI --- */
+        /* GRADE DE FOTOS */
         .grid-fotos {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
             
-            /* Mudei de '101vh' para 'auto'. 
-               Isso faz a grade ter o tamanho exato das fotos, sem sobrar espaço preto. */
+            /* --- MUDANÇA 2: CORREÇÃO DOS ESPAÇOS PRETOS --- */
+            /* Mudei de '101vh' para 'auto' para a grade ter o tamanho real das fotos */
             min-height: auto; 
             
-            /* Reduzi o espaço extra no final para não ficar um buraco gigante */
-            padding-bottom: 50px; 
+            /* Espaço no final para rolar com folga */
+            padding-bottom: 100px; 
             
             box-sizing: border-box;
         }
@@ -123,7 +127,7 @@
         .msg-vazio {
             text-align: center;
             color: #8e8e93;
-            margin-top: 100px; 
+            margin-top: 50px; 
             font-size: 16px;
         }
         
