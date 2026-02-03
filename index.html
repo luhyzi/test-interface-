@@ -32,8 +32,7 @@
             justify-content: space-between;
             align-items: flex-end; 
             
-            /* --- AJUSTE DE POSIÇÃO --- */
-            /* Baixei de 110px para 80px. Agora deve ficar na altura ideal. */
+            /* Mantive o ajuste de altura que você gostou (80px) */
             padding: 0 20px 80px 20px; 
             
             box-sizing: border-box;
@@ -87,18 +86,22 @@
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            
-            /* Ajustei aqui também para as fotos não ficarem com um buraco muito grande em cima */
             padding-top: 80px; 
         }
 
-        /* GRADE DE FOTOS */
+        /* --- A CORREÇÃO ESTÁ AQUI --- */
         .grid-fotos {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            min-height: 101vh;
-            padding-bottom: 200px;
+            
+            /* Mudei de '101vh' para 'auto'. 
+               Isso faz a grade ter o tamanho exato das fotos, sem sobrar espaço preto. */
+            min-height: auto; 
+            
+            /* Reduzi o espaço extra no final para não ficar um buraco gigante */
+            padding-bottom: 50px; 
+            
             box-sizing: border-box;
         }
 
